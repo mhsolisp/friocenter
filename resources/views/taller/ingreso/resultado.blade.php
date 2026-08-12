@@ -95,10 +95,17 @@
             @elseif ($turnoHoy->estado === 'ingresado')
                 <p class="sin-turno" style="margin-top:1rem;">
                     Ingreso ya confirmado a las {{ $turnoHoy->fecha_ingreso_real?->format('H:i') }} hs.
-                    El presupuesto lo carga Administración.
                 </p>
+                <a href="{{ route('taller.orden-trabajo.edit', $turnoHoy) }}" class="confirmar" style="display:inline-block; text-decoration:none;">
+                    {{ $turnoHoy->ordenTrabajo ? 'Editar orden de trabajo' : 'Cargar orden de trabajo' }}
+                </a>
             @else
                 <p class="sin-turno" style="margin-top:1rem;">Este ticket ya está en una etapa posterior ({{ str_replace('_', ' ', $turnoHoy->estado) }}).</p>
+                @if (in_array($turnoHoy->estado, ['presupuestado', 'aceptado']))
+                    <a href="{{ route('taller.orden-trabajo.edit', $turnoHoy) }}" class="confirmar" style="display:inline-block; text-decoration:none;">
+                        {{ $turnoHoy->ordenTrabajo ? 'Editar orden de trabajo' : 'Cargar orden de trabajo' }}
+                    </a>
+                @endif
             @endif
         @else
             <p class="sin-turno">No hay ningún turno reservado para hoy con esta patente.</p>

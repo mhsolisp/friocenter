@@ -8,6 +8,7 @@
 // -----------------------------------------------------------------------
 
 use App\Http\Controllers\Taller\IngresoController;
+use App\Http\Controllers\Taller\OrdenTrabajoController;
 use App\Http\Controllers\Taller\TurnosHoyController;
 use App\Http\Controllers\Taller\TurnosProgramadosController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,11 @@ Route::middleware(['auth', 'rol:taller'])
         // ver_historial de cada usuario (se resuelve en el controlador).
         Route::get('/ingreso', [IngresoController::class, 'index'])->name('ingreso.index');
         Route::post('/ingreso/{turno}/confirmar', [IngresoController::class, 'confirmar'])->name('ingreso.confirmar');
+
+        // Orden de trabajo: tareas, repuestos y tiempo estimado. Nunca incluye
+        // montos — eso es exclusivo de Administración (ver routes/administracion.php).
+        Route::get('/turnos/{turno}/orden-trabajo', [OrdenTrabajoController::class, 'edit'])->name('orden-trabajo.edit');
+        Route::post('/turnos/{turno}/orden-trabajo', [OrdenTrabajoController::class, 'update'])->name('orden-trabajo.update');
 
         // Estas dos sí están protegidas por permiso puntual.
         Route::get('/turnos-hoy', [TurnosHoyController::class, 'index'])

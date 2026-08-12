@@ -45,7 +45,7 @@
         <div class="card">
             <h3>Presupuestos</h3>
             <p>Cargar y enviar presupuestos a clientes.</p>
-            <span class="badge">Próxima etapa</span>
+            <a href="{{ route('administracion.presupuestos.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Ver presupuestos →</a>
         </div>
         <div class="card">
             <h3>Usuarios</h3>
