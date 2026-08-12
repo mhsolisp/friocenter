@@ -5,7 +5,25 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git config *)"
+      "Bash(git config *)",
+      "Bash(curl -s -o /dev/null -w \"welcome: %{http_code}\\\\n\" http://127.0.0.1:8000/)",
+      "Bash(tasklist //FI \"IMAGENAME eq php.exe\")",
+      "Bash(php artisan *)",
+      "PowerShell(php artisan db:seed --class=UsuariosDatosIniciales --no-interaction)",
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" artisan db:seed --class=UsuariosDatosIniciales --no-interaction)",
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" artisan tinker --execute 'echo App\\\\Models\\\\User::where\\(\"email\", \"romina@friocenter.com.ar\"\\)->exists\\(\\) ? \"EXISTS\" : \"NOT FOUND\";')",
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" artisan tinker --execute=\"echo 1+1;\")",
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" artisan tinker --execute=\"echo App\\\\Models\\\\User::where\\('email', 'romina@friocenter.com.ar'\\)->exists\\(\\) ? 'EXISTS' : 'NOT FOUND';\")",
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" artisan tinker --execute=\"echo App\\\\Models\\\\User::where\\('email', 'victor@friocenter.com'\\)->exists\\(\\) ? 'EXISTS' : 'NOT FOUND';\")",
+      "Read(//c/Users/matias/Downloads/frio-center-sistema_1/frio-center-app/app/Http/Controllers/Taller//**)",
+      "Read(//c/Users/matias/Downloads/frio-center-sistema_1/frio-center-app/resources/views/taller//**)",
+      "Read(//c/Users/matias/Downloads/frio-center-sistema_1/frio-center-app/resources/views/taller/ingreso//**)",
+      "Read(//c/Users/matias/Downloads/frio-center-sistema_1/frio-center-app/routes/**)",
+      "PowerShell(Get-ChildItem \"C:\\\\laragon\\\\www\\\\frio-center\\\\resources\\\\views\\\\taller\" -Recurse -File | ForEach-Object { Write-Output $_.FullName })",
+      "Bash(C:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.4.3-winx64\\\\bin\\\\mysql.exe *)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "laravel-boost"
+  ]
 }

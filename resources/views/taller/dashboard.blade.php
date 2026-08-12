@@ -38,27 +38,27 @@
         <div class="card {{ auth()->user()->tienePermiso('ver_dia') ? '' : 'disabled' }}">
             <h3>Turnos del día</h3>
             <p>Ver los ingresos programados para hoy.</p>
-            <span class="badge {{ auth()->user()->tienePermiso('ver_dia') ? 'ok' : 'no' }}">
-                {{ auth()->user()->tienePermiso('ver_dia') ? 'Habilitado' : 'Sin acceso' }}
-            </span>
+            @if (auth()->user()->tienePermiso('ver_dia'))
+                <a href="{{ route('taller.turnos-hoy') }}" class="badge ok" style="text-decoration:none;">Ver turnos de hoy →</a>
+            @else
+                <span class="badge no">Sin acceso</span>
+            @endif
         </div>
         <div class="card {{ auth()->user()->tienePermiso('ver_dias_programados') ? '' : 'disabled' }}">
             <h3>Días programados</h3>
             <p>Ver los turnos agendados a futuro.</p>
-            <span class="badge {{ auth()->user()->tienePermiso('ver_dias_programados') ? 'ok' : 'no' }}">
-                {{ auth()->user()->tienePermiso('ver_dias_programados') ? 'Habilitado' : 'Sin acceso' }}
-            </span>
+            @if (auth()->user()->tienePermiso('ver_dias_programados'))
+                <a href="{{ route('taller.turnos-programados') }}" class="badge ok" style="text-decoration:none;">Ver turnos futuros →</a>
+            @else
+                <span class="badge no">Sin acceso</span>
+            @endif
         </div>
-        <div class="card {{ auth()->user()->tienePermiso('ver_historial') ? '' : 'disabled' }}">
+        <div class="card">
             <h3>Búsqueda por patente + historial</h3>
             <p>Buscar un vehículo y ver atenciones anteriores.</p>
-            <span class="badge {{ auth()->user()->tienePermiso('ver_historial') ? 'ok' : 'no' }}">
-                {{ auth()->user()->tienePermiso('ver_historial') ? 'Habilitado' : 'Sin acceso' }}
-            </span>
+            <a href="{{ route('taller.ingreso.index') }}" class="badge ok" style="text-decoration:none;">Buscar patente →</a>
         </div>
     </div>
-
-    <p style="color:#888; font-size:0.85rem; margin-top:2rem;">Estas secciones todavía son placeholders — se activan con la funcionalidad real en la próxima etapa.</p>
 </main>
 </body>
 </html>
