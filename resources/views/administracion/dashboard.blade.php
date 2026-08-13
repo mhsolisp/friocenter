@@ -33,6 +33,11 @@
 
     <div class="grid">
         <div class="card">
+            <h3>Recibir auto</h3>
+            <p>Confirmar la llegada de un vehículo y generar su orden de trabajo.</p>
+            <a href="{{ route('administracion.recibir.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Recibir auto →</a>
+        </div>
+        <div class="card">
             <h3>Configuración de agenda</h3>
             <p>Horarios, cantidad de turnos y bloqueo de días.</p>
             <span class="badge">Próxima etapa</span>

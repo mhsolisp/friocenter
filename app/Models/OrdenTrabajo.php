@@ -12,10 +12,20 @@ class OrdenTrabajo extends Model
     protected $fillable = [
         'turno_id',
         'usuario_id',
+        'tomada_at',
         'tareas',
         'repuestos',
         'tiempo_estimado',
     ];
+
+    protected $casts = [
+        'tomada_at' => 'datetime',
+    ];
+
+    public function estaTomada(): bool
+    {
+        return ! is_null($this->tomada_at);
+    }
 
     public function turno(): BelongsTo
     {

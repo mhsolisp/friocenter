@@ -58,6 +58,11 @@
             <p>Buscar un vehículo y ver atenciones anteriores.</p>
             <a href="{{ route('taller.ingreso.index') }}" class="badge ok" style="text-decoration:none;">Buscar patente →</a>
         </div>
+        <div class="card">
+            <h3>Órdenes de trabajo</h3>
+            <p>Tomar y cargar el detalle de vehículos ya recibidos.</p>
+            <a href="{{ route('taller.ordenes-trabajo.index') }}" class="badge ok" style="text-decoration:none;">Ver cola →</a>
+        </div>
     </div>
 </main>
 </body>

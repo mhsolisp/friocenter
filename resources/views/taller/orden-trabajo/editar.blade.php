@@ -62,6 +62,9 @@
     <div class="card">
         <h2>Orden de Trabajo</h2>
         <p class="nota">Este documento es interno del Taller: tareas a realizar, repuestos necesarios y tiempo estimado. El presupuesto (monto a cobrar) lo carga Administración por separado.</p>
+        @if ($turno->ordenTrabajo && $turno->ordenTrabajo->estaTomada())
+            <p class="nota">Tomada por {{ $turno->ordenTrabajo->usuario->name }} el {{ $turno->ordenTrabajo->tomada_at->format('d/m/Y H:i') }} hs.</p>
+        @endif
 
         <form action="{{ route('taller.orden-trabajo.update', $turno) }}" method="POST">
             @csrf

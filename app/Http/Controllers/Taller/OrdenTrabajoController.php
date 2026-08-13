@@ -19,7 +19,13 @@ class OrdenTrabajoController extends Controller
             abort(403, 'El vehículo todavía no ingresó al taller.');
         }
 
-        $turno->load(['cliente', 'vehiculo.modelo.marca', 'ordenTrabajo']);
+        $turno->load(['cliente', 'vehiculo.modelo.marca', 'ordenTrabajo.usuario']);
+
+        if (! $turno->ordenTrabajo || ! $turno->ordenTrabajo->estaTomada()) {
+            return redirect()
+                ->route('taller.ordenes-trabajo.index')
+                ->withErrors(['orden' => 'Primero tenés que tomar esta orden de trabajo desde la cola.']);
+        }
 
         return view('taller.orden-trabajo.editar', compact('turno'));
     }
@@ -41,7 +47,7 @@ class OrdenTrabajoController extends Controller
 
         $turno->ordenTrabajo()->updateOrCreate(
             ['turno_id' => $turno->id],
-            [...$datos, 'usuario_id' => $request->user()->id]
+            $datos
         );
 
         return redirect()

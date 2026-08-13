@@ -7,6 +7,7 @@
 // de este archivo desde ahí, igual que con los otros).
 // -----------------------------------------------------------------------
 
+use App\Http\Controllers\Taller\ColaTrabajoController;
 use App\Http\Controllers\Taller\IngresoController;
 use App\Http\Controllers\Taller\OrdenTrabajoController;
 use App\Http\Controllers\Taller\TurnosHoyController;
@@ -21,11 +22,16 @@ Route::middleware(['auth', 'rol:taller'])
         // Búsqueda por patente: accesible para cualquier usuario de Taller.
         // El historial dentro del resultado se filtra según el permiso
         // ver_historial de cada usuario (se resuelve en el controlador).
+        // La confirmación de recepción del vehículo ahora la hace
+        // Administración (ver routes/administracion.php).
         Route::get('/ingreso', [IngresoController::class, 'index'])->name('ingreso.index');
-        Route::post('/ingreso/{turno}/confirmar', [IngresoController::class, 'confirmar'])->name('ingreso.confirmar');
 
-        // Orden de trabajo: tareas, repuestos y tiempo estimado. Nunca incluye
-        // montos — eso es exclusivo de Administración (ver routes/administracion.php).
+        // Cola de trabajo: tomar y cargar el detalle de una orden de trabajo.
+        Route::get('/ordenes-trabajo', [ColaTrabajoController::class, 'index'])->name('ordenes-trabajo.index');
+        Route::post('/ordenes-trabajo/{orden}/tomar', [ColaTrabajoController::class, 'tomar'])->name('ordenes-trabajo.tomar');
+
+        // Formulario para cargar tareas, repuestos y tiempo estimado, una
+        // vez que la orden ya fue tomada.
         Route::get('/turnos/{turno}/orden-trabajo', [OrdenTrabajoController::class, 'edit'])->name('orden-trabajo.edit');
         Route::post('/turnos/{turno}/orden-trabajo', [OrdenTrabajoController::class, 'update'])->name('orden-trabajo.update');
 

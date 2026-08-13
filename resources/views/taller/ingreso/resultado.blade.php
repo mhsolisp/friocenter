@@ -88,22 +88,24 @@
             <dd>{{ $turnoHoy->problematica }}</dd>
 
             @if ($turnoHoy->estado === 'reservado')
-                <form action="{{ route('taller.ingreso.confirmar', $turnoHoy) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="confirmar">Confirmar ingreso del vehículo</button>
-                </form>
+                <p class="sin-turno" style="margin-top:1rem;">Esperando que Administración confirme la recepción del vehículo.</p>
             @elseif ($turnoHoy->estado === 'ingresado')
                 <p class="sin-turno" style="margin-top:1rem;">
-                    Ingreso ya confirmado a las {{ $turnoHoy->fecha_ingreso_real?->format('H:i') }} hs.
+                    Ingreso confirmado a las {{ $turnoHoy->fecha_ingreso_real?->format('H:i') }} hs.
+                    @if ($turnoHoy->ordenTrabajo && $turnoHoy->ordenTrabajo->estaTomada())
+                        Orden de trabajo tomada por {{ $turnoHoy->ordenTrabajo->usuario->name }}.
+                    @else
+                        Todavía nadie tomó la orden de trabajo.
+                    @endif
                 </p>
-                <a href="{{ route('taller.orden-trabajo.edit', $turnoHoy) }}" class="confirmar" style="display:inline-block; text-decoration:none;">
-                    {{ $turnoHoy->ordenTrabajo ? 'Editar orden de trabajo' : 'Cargar orden de trabajo' }}
+                <a href="{{ route('taller.ordenes-trabajo.index') }}" class="confirmar" style="display:inline-block; text-decoration:none;">
+                    Ir a la cola de órdenes de trabajo
                 </a>
             @else
                 <p class="sin-turno" style="margin-top:1rem;">Este ticket ya está en una etapa posterior ({{ str_replace('_', ' ', $turnoHoy->estado) }}).</p>
-                @if (in_array($turnoHoy->estado, ['presupuestado', 'aceptado']))
+                @if (in_array($turnoHoy->estado, ['presupuestado', 'aceptado']) && $turnoHoy->ordenTrabajo)
                     <a href="{{ route('taller.orden-trabajo.edit', $turnoHoy) }}" class="confirmar" style="display:inline-block; text-decoration:none;">
-                        {{ $turnoHoy->ordenTrabajo ? 'Editar orden de trabajo' : 'Cargar orden de trabajo' }}
+                        Ver / editar orden de trabajo
                     </a>
                 @endif
             @endif

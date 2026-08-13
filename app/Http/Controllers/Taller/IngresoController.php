@@ -39,8 +39,8 @@ class IngresoController extends Controller
         // Turno de hoy para ese vehículo (el que corresponde ingresar ahora).
         $turnoHoy = Turno::where('vehiculo_id', $vehiculo->id)
             ->whereDate('fecha_turno', now()->toDateString())
-            ->whereIn('estado', ['reservado', 'ingresado', 'presupuestado'])
-            ->with('cliente')
+            ->whereIn('estado', ['reservado', 'ingresado', 'presupuestado', 'aceptado'])
+            ->with(['cliente', 'ordenTrabajo.usuario'])
             ->orderByDesc('created_at')
             ->first();
 
@@ -63,21 +63,5 @@ class IngresoController extends Controller
             'historial' => $historial,
             'puedeVerHistorial' => $puedeVerHistorial,
         ]);
-    }
-
-    /**
-     * POST /taller/ingreso/{turno}/confirmar
-     * Marca el ingreso real del vehículo al taller (llegó físicamente).
-     */
-    public function confirmar(Turno $turno)
-    {
-        $turno->update([
-            'estado' => 'ingresado',
-            'fecha_ingreso_real' => now(),
-        ]);
-
-        return redirect()
-            ->route('taller.ingreso.index', ['patente' => $turno->vehiculo->patente])
-            ->with('ok', 'Ingreso confirmado. El vehículo ya está en el taller.');
     }
 }
