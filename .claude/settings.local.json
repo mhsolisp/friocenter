@@ -20,7 +20,11 @@
       "Read(//c/Users/matias/Downloads/frio-center-sistema_1/frio-center-app/resources/views/taller/ingreso//**)",
       "Read(//c/Users/matias/Downloads/frio-center-sistema_1/frio-center-app/routes/**)",
       "PowerShell(Get-ChildItem \"C:\\\\laragon\\\\www\\\\frio-center\\\\resources\\\\views\\\\taller\" -Recurse -File | ForEach-Object { Write-Output $_.FullName })",
-      "Bash(C:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.4.3-winx64\\\\bin\\\\mysql.exe *)"
+      "Bash(C:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.4.3-winx64\\\\bin\\\\mysql.exe *)",
+      "Bash(curl *)",
+      "Bash(php -r \"echo date\\('l', strtotime\\('2026-08-15'\\)\\);\")",
+      "Bash(\"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" -r \"echo date\\('N l', strtotime\\('2026-08-15'\\)\\);\")",
+      "Bash(\"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" -r \"echo date\\('N l', strtotime\\('2026-08-17'\\)\\);\")"
     ]
   },
   "enabledMcpjsonServers": [

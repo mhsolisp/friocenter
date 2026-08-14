@@ -40,12 +40,12 @@
         <div class="card">
             <h3>Configuración de agenda</h3>
             <p>Horarios, cantidad de turnos y bloqueo de días.</p>
-            <span class="badge">Próxima etapa</span>
+            <a href="{{ route('administracion.agenda.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Configurar →</a>
         </div>
         <div class="card">
             <h3>Marcas y modelos</h3>
             <p>Administrar el listado del selector de vehículos.</p>
-            <span class="badge">Próxima etapa</span>
+            <a href="{{ route('administracion.marcas.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Administrar →</a>
         </div>
         <div class="card">
             <h3>Presupuestos</h3>
