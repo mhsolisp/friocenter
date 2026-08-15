@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Administracion;
 
 use App\Http\Controllers\Controller;
+use App\Models\Presupuesto;
 use App\Models\Turno;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PresupuestoController extends Controller
 {
@@ -23,6 +25,34 @@ class PresupuestoController extends Controller
             ->get();
 
         return view('administracion.presupuestos.index', compact('turnos'));
+    }
+
+    /**
+     * GET /administracion/presupuestos/historial
+     * Listado completo de presupuestos ya cargados (aceptados, rechazados
+     * o todavía pendientes de respuesta), con buscador y filtro por estado.
+     */
+    public function historial(Request $request)
+    {
+        $query = Presupuesto::query()
+            ->with(['turno.cliente', 'turno.vehiculo.modelo.marca'])
+            ->orderByDesc('fecha_envio');
+
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->string('estado'));
+        }
+
+        if ($request->filled('buscar')) {
+            $buscar = $request->string('buscar');
+            $query->where(function ($q) use ($buscar) {
+                $q->whereHas('turno.vehiculo', fn ($qq) => $qq->where('patente', 'like', "%{$buscar}%"))
+                    ->orWhereHas('turno.cliente', fn ($qq) => $qq->where('nombre_apellido', 'like', "%{$buscar}%"));
+            });
+        }
+
+        $presupuestos = $query->paginate(25)->withQueryString();
+
+        return view('administracion.presupuestos.historial', compact('presupuestos'));
     }
 
     /**
@@ -45,7 +75,9 @@ class PresupuestoController extends Controller
     /**
      * POST /administracion/turnos/{turno}/presupuesto
      * Carga (o actualiza, mientras esté pendiente) el monto y lo marca
-     * como enviado al cliente.
+     * como enviado al cliente. La primera vez que se guarda un presupuesto
+     * para el turno, se le asigna el número correlativo del ejercicio
+     * vigente (no cambia si después se corrige el monto).
      */
     public function store(Request $request, Turno $turno)
     {
@@ -53,21 +85,22 @@ class PresupuestoController extends Controller
             'monto' => 'required|numeric|min:0',
         ]);
 
-        $turno->presupuesto()->updateOrCreate(
-            ['turno_id' => $turno->id],
-            [
-                'monto' => $datos['monto'],
-                'usuario_id' => $request->user()->id,
-                'estado' => 'pendiente',
-                'fecha_envio' => now(),
-            ]
-        );
+        DB::transaction(function () use ($turno, $datos, $request) {
+            $presupuesto = $turno->presupuesto()->lockForUpdate()->first();
+
+            if (! $presupuesto) {
+                $presupuesto = new Presupuesto(['turno_id' => $turno->id]);
+                $presupuesto->asignarNumero(now());
+            }
+
+            $presupuesto->usuario_id = $request->user()->id;
+            $presupuesto->monto = $datos['monto'];
+            $presupuesto->estado = 'pendiente';
+            $presupuesto->fecha_envio = now();
+            $presupuesto->save();
+        });
 
         $turno->update(['estado' => 'presupuestado']);
-
-        // TODO (próxima etapa): notificar al cliente por WhatsApp/email que el
-        // presupuesto está disponible (recordar: valores netos + IVA, leyenda
-        // "Documento no válido como factura").
 
         return redirect()
             ->route('administracion.presupuestos.edit', $turno)

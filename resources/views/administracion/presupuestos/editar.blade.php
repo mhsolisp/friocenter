@@ -37,6 +37,14 @@
         .estado-final.aceptado { color: var(--ok-green); }
         .estado-final.rechazado { color: var(--error); }
         .ok-msg { background: #eaf7ea; border: 1px solid var(--ok-green); color: var(--ok-green); border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.9rem; }
+        .btn-whatsapp { display: inline-block; background: #25d366; color: #fff; text-decoration: none; padding: 0.65rem 1.2rem; border-radius: 8px; font-weight: 700; font-size: 0.88rem; }
+        .btn-whatsapp:hover { background: #1ebe5b; }
+        .error-msg { background: #fdecea; border: 1px solid var(--error); color: var(--error); border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.9rem; }
+        .numero-presupuesto { font-size: 0.85rem; color: #5b6b78; margin-bottom: 1rem; }
+        .numero-presupuesto strong { color: var(--navy); font-size: 1rem; }
+        .acciones-doc { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .btn-pdf { display: inline-block; background: #fff; color: var(--navy); border: 1px solid var(--navy); text-decoration: none; padding: 0.65rem 1.2rem; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; }
+        .btn-pdf:hover { background: var(--ice-light); }
     </style>
 </head>
 <body>
@@ -54,10 +62,17 @@
     @if (session('ok'))
         <div class="ok-msg">{{ session('ok') }}</div>
     @endif
+    @if ($errors->any())
+        <div class="error-msg">{{ $errors->first() }}</div>
+    @endif
 
     <div class="top-row">
         <span class="patente-chip">{{ $turno->vehiculo->patente }}</span>
-        <a href="{{ route('administracion.presupuestos.index') }}" class="volver">← Volver al listado</a>
+        <span>
+            <a href="{{ route('administracion.presupuestos.historial') }}" class="volver">Historial →</a>
+            &nbsp;·&nbsp;
+            <a href="{{ route('administracion.presupuestos.index') }}" class="volver">Volver al listado</a>
+        </span>
     </div>
 
     <div class="card">
@@ -87,6 +102,34 @@
 
     <div class="card">
         <h2>Presupuesto</h2>
+
+        @if ($turno->presupuesto)
+            @if ($turno->presupuesto->numero_completo)
+                <div class="numero-presupuesto">N° de presupuesto: <strong>{{ $turno->presupuesto->numero_completo }}</strong></div>
+            @endif
+
+            @php
+                $telefonoLimpio = preg_replace('/\D/', '', $turno->cliente->telefono);
+                $mensajeWhatsapp = "Hola {$turno->cliente->nombre_apellido}, te escribimos de Frío Center. "
+                    . "El presupuesto para tu {$turno->vehiculo->descripcion} (patente {$turno->vehiculo->patente}) es de \$"
+                    . number_format($turno->presupuesto->monto, 2, ',', '.')
+                    . " (valor neto + IVA, documento no válido como factura). "
+                    . "Por favor confirmanos si lo aceptás. ¡Gracias!";
+            @endphp
+            <div class="acciones-doc">
+                <a href="https://wa.me/{{ $telefonoLimpio }}?text={{ rawurlencode($mensajeWhatsapp) }}"
+                   target="_blank" rel="noopener" class="btn-whatsapp">
+                    📱 Enviar por WhatsApp
+                </a>
+                <a href="{{ route('administracion.presupuestos.pdf', $turno) }}" target="_blank" class="btn-pdf">
+                    📄 Descargar PDF
+                </a>
+                <form action="{{ route('administracion.presupuestos.pdf.enviar', $turno) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn-pdf">✉️ Enviar PDF por email</button>
+                </form>
+            </div>
+        @endif
 
         @if (!$turno->presupuesto || $turno->presupuesto->estado === 'pendiente')
             @if ($turno->presupuesto)

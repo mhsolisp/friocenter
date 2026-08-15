@@ -55,7 +55,12 @@
         <div class="card">
             <h3>Usuarios</h3>
             <p>Gestionar accesos y permisos del equipo de Taller.</p>
-            <span class="badge">Próxima etapa</span>
+            <a href="{{ route('administracion.usuarios.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Administrar →</a>
+        </div>
+        <div class="card">
+            <h3>Configuración de correo</h3>
+            <p>Datos del servidor de email para el enlace de gestión de turnos.</p>
+            <a href="{{ route('administracion.configuracion.correo') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Configurar →</a>
         </div>
     </div>
 </main>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TurnoConfirmadoMail;
 use App\Models\BloqueoAgenda;
 use App\Models\Cliente;
 use App\Models\ConfiguracionAgenda;
@@ -11,7 +12,7 @@ use App\Models\Vehiculo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class TurnoController extends Controller
@@ -41,7 +42,7 @@ class TurnoController extends Controller
             ->where('patente', $patente)
             ->first();
 
-        if (!$vehiculo) {
+        if (! $vehiculo) {
             return response()->json(['encontrado' => false]);
         }
 
@@ -105,13 +106,13 @@ class TurnoController extends Controller
             ->where('activo', true)
             ->first();
 
-        if (!$config) {
+        if (! $config) {
             return []; // Día no habilitado para turnos (ej. domingo).
         }
 
         // 3. Generar los horarios posibles entre hora_inicio y hora_fin.
-        $inicio = Carbon::parse($fecha->toDateString() . ' ' . $config->hora_inicio);
-        $fin = Carbon::parse($fecha->toDateString() . ' ' . $config->hora_fin);
+        $inicio = Carbon::parse($fecha->toDateString().' '.$config->hora_inicio);
+        $fin = Carbon::parse($fecha->toDateString().' '.$config->hora_fin);
 
         $slots = [];
         for ($hora = $inicio->copy(); $hora->lessThan($fin); $hora->addMinutes($config->intervalo_minutos)) {
@@ -128,11 +129,11 @@ class TurnoController extends Controller
         $ahora = now();
 
         return collect($slots)->map(function (string $horario) use ($config, $ocupados, $fecha, $ahora) {
-            $ocupadosEnSlot = $ocupados[$horario . ':00'] ?? ($ocupados[$horario] ?? 0);
+            $ocupadosEnSlot = $ocupados[$horario.':00'] ?? ($ocupados[$horario] ?? 0);
             $cupos = max(0, $config->turnos_por_franja - $ocupadosEnSlot);
 
             // No ofrecer horarios que ya pasaron si la fecha elegida es hoy.
-            $horarioCompleto = Carbon::parse($fecha->toDateString() . ' ' . $horario);
+            $horarioCompleto = Carbon::parse($fecha->toDateString().' '.$horario);
             if ($fecha->isToday() && $horarioCompleto->lessThan($ahora)) {
                 $cupos = 0;
             }
@@ -162,7 +163,7 @@ class TurnoController extends Controller
             'marca_id' => 'required_without:vehiculo_otro|nullable|exists:marcas,id',
             'modelo_id' => 'required_without:vehiculo_otro|nullable|exists:modelos,id',
             'vehiculo_otro' => 'required_without:modelo_id|nullable|string|max:150',
-            'anio' => 'nullable|integer|min:1970|max:' . (date('Y') + 1),
+            'anio' => 'nullable|integer|min:1970|max:'.(date('Y') + 1),
             'color' => 'nullable|string|max:40',
 
             'problematica' => 'required|string|max:1000',
@@ -180,14 +181,14 @@ class TurnoController extends Controller
             $slots = collect($this->calcularSlotsDisponibles(Carbon::parse($datos['fecha_turno'])));
             $slot = $slots->firstWhere('horario', $datos['hora_turno']);
 
-            if (!$slot || $slot['cupos_disponibles'] <= 0) {
+            if (! $slot || $slot['cupos_disponibles'] <= 0) {
                 throw ValidationException::withMessages([
                     'hora_turno' => 'Ese horario ya no está disponible. Por favor elegí otro.',
                 ]);
             }
 
             // Cliente: si el frontend confirmó titularidad de un vehículo existente, reutilizamos ese cliente.
-            if (!empty($datos['vehiculo_id_confirmado'])) {
+            if (! empty($datos['vehiculo_id_confirmado'])) {
                 $vehiculoExistente = Vehiculo::findOrFail($datos['vehiculo_id_confirmado']);
                 $cliente = $vehiculoExistente->cliente;
                 $cliente->update([
@@ -235,8 +236,17 @@ class TurnoController extends Controller
             ]);
         });
 
-        // TODO (próxima etapa): disparar notificación de confirmación por WhatsApp
-        // y el mail con el enlace de gestión (turnos.gestionar, con $turno->token).
+        // El WhatsApp de confirmación queda pendiente para una próxima etapa
+        // (requiere una cuenta de WhatsApp Business API). El mail con el
+        // enlace de gestión sí se envía, usando la configuración de correo
+        // cargada por Administración en /administracion/configuracion/correo.
+        try {
+            Mail::to($turno->cliente->email)->send(new TurnoConfirmadoMail($turno->load(['cliente', 'vehiculo.modelo.marca'])));
+        } catch (\Throwable $e) {
+            // Si el correo falla, no bloqueamos la reserva del turno — solo
+            // se registra el error para poder revisarlo después.
+            report($e);
+        }
 
         return redirect()
             ->route('turnos.confirmado', $turno->token)
@@ -277,7 +287,7 @@ class TurnoController extends Controller
     {
         $turno = Turno::where('token', $token)->firstOrFail();
 
-        if (!$turno->puede_gestionarse) {
+        if (! $turno->puede_gestionarse) {
             return back()->withErrors(['turno' => 'Ya no es posible reprogramar este turno (venció el plazo o cambió de estado).']);
         }
 
@@ -289,7 +299,7 @@ class TurnoController extends Controller
         $slots = collect($this->calcularSlotsDisponibles(Carbon::parse($datos['fecha_turno'])));
         $slot = $slots->firstWhere('horario', $datos['hora_turno']);
 
-        if (!$slot || $slot['cupos_disponibles'] <= 0) {
+        if (! $slot || $slot['cupos_disponibles'] <= 0) {
             return back()->withErrors(['hora_turno' => 'Ese horario ya no está disponible. Por favor elegí otro.']);
         }
 
@@ -299,7 +309,12 @@ class TurnoController extends Controller
         ]);
 
         // El mismo token/enlace sigue siendo válido, ahora hasta la nueva fecha y hora.
-        // TODO (próxima etapa): reenviar WhatsApp/mail confirmando la reprogramación.
+        // El WhatsApp de reprogramación queda pendiente para una próxima etapa.
+        try {
+            Mail::to($turno->cliente->email)->send(new TurnoConfirmadoMail($turno->load(['cliente', 'vehiculo.modelo.marca'])));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return redirect()
             ->route('turnos.gestionar', $token)
@@ -313,7 +328,7 @@ class TurnoController extends Controller
     {
         $turno = Turno::where('token', $token)->firstOrFail();
 
-        if (!$turno->puede_gestionarse) {
+        if (! $turno->puede_gestionarse) {
             return back()->withErrors(['turno' => 'Ya no es posible cancelar este turno (venció el plazo de las 14 hs del día anterior, o ya cambió de estado).']);
         }
 

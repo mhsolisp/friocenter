@@ -38,7 +38,10 @@
     </nav>
 </header>
 <main>
-    <h1>Presupuestos</h1>
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+        <h1 style="margin:0;">Presupuestos</h1>
+        <a href="{{ route('administracion.presupuestos.historial') }}" style="color:var(--navy); font-size:0.85rem; font-weight:600; text-decoration:none;">Ver historial completo →</a>
+    </div>
     <p style="color:#5b6b78; font-size:0.9rem;">Vehículos ingresados esperando presupuesto, o presupuestados esperando la respuesta del cliente.</p>
 
     @if ($turnos->isEmpty())
