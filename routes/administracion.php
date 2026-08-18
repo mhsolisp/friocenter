@@ -13,7 +13,9 @@ use App\Http\Controllers\Administracion\MarcaController;
 use App\Http\Controllers\Administracion\ModeloController;
 use App\Http\Controllers\Administracion\PresupuestoController;
 use App\Http\Controllers\Administracion\PresupuestoPdfController;
+use App\Http\Controllers\Administracion\ProveedorController;
 use App\Http\Controllers\Administracion\RecepcionController;
+use App\Http\Controllers\Administracion\RubroProveedorController;
 use App\Http\Controllers\Administracion\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +47,19 @@ Route::middleware(['auth', 'rol:administracion'])
         Route::delete('/marcas/{marca}', [MarcaController::class, 'destroy'])->name('marcas.destroy');
         Route::post('/marcas/{marca}/modelos', [ModeloController::class, 'store'])->name('modelos.store');
         Route::delete('/modelos/{modelo}', [ModeloController::class, 'destroy'])->name('modelos.destroy');
+
+        // Proveedores: ABM con baja lógica, y su catálogo administrable de rubros.
+        // Importante: las rutas literales de /rubros van ANTES que las que usan
+        // {proveedor}, si no "rubros" matchea como si fuera un id de proveedor.
+        Route::get('/proveedores', [ProveedorController::class, 'index'])->name('proveedores.index');
+        Route::get('/proveedores/nuevo', [ProveedorController::class, 'create'])->name('proveedores.create');
+        Route::post('/proveedores', [ProveedorController::class, 'store'])->name('proveedores.store');
+        Route::get('/proveedores/rubros', [RubroProveedorController::class, 'index'])->name('proveedores.rubros.index');
+        Route::post('/proveedores/rubros', [RubroProveedorController::class, 'store'])->name('proveedores.rubros.store');
+        Route::delete('/proveedores/rubros/{rubro}', [RubroProveedorController::class, 'destroy'])->name('proveedores.rubros.destroy');
+        Route::get('/proveedores/{proveedor}/editar', [ProveedorController::class, 'edit'])->name('proveedores.edit');
+        Route::post('/proveedores/{proveedor}', [ProveedorController::class, 'update'])->name('proveedores.update');
+        Route::post('/proveedores/{proveedor}/toggle', [ProveedorController::class, 'toggle'])->name('proveedores.toggle');
 
         // Gestión de usuarios (Administración y Taller).
         Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');

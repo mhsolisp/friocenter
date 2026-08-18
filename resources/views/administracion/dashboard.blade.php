@@ -53,6 +53,11 @@
             <a href="{{ route('administracion.presupuestos.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Ver presupuestos →</a>
         </div>
         <div class="card">
+            <h3>Proveedores</h3>
+            <p>Repuestos, gas refrigerante e insumos del taller.</p>
+            <a href="{{ route('administracion.proveedores.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Administrar →</a>
+        </div>
+        <div class="card">
             <h3>Usuarios</h3>
             <p>Gestionar accesos y permisos del equipo de Taller.</p>
             <a href="{{ route('administracion.usuarios.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Administrar →</a>
