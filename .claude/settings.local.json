@@ -25,7 +25,15 @@
       "Bash(php -r \"echo date\\('l', strtotime\\('2026-08-15'\\)\\);\")",
       "Bash(\"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" -r \"echo date\\('N l', strtotime\\('2026-08-15'\\)\\);\")",
       "Bash(\"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" -r \"echo date\\('N l', strtotime\\('2026-08-17'\\)\\);\")",
-      "Bash(xargs grep -l \"@vite\")"
+      "Bash(xargs grep -l \"@vite\")",
+      "Bash(find /c/laragon/www/frio-center -maxdepth 2 -iname \"*deploy*\" -o -iname \"*.ps1\" -iname \"*ftp*\" 2>/dev/null | grep -v vendor | grep -v node_modules; echo \"---\"; ls /c/deploy-frio-3/ 2>/dev/null)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "Bash(git fetch *)",
+      "Bash(git ls-tree *)",
+      "PowerShell(php artisan migrate --no-interaction)",
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" artisan migrate --no-interaction)"
     ]
   },
   "enabledMcpjsonServers": [
