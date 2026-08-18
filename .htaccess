@@ -1,0 +1,11 @@
+Options -Indexes -MultiViews
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block direct access to dotfiles/dot-directories (.env, .git, .editorconfig, etc.)
+    RewriteRule (^|/)\. - [F]
+
+    # Block direct access to application directories that must never be served directly.
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|storage|tests|vendor|node_modules)(/|$) - [F]
+</IfModule>
