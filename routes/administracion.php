@@ -8,8 +8,11 @@
 
 use App\Http\Controllers\Administracion\AgendaController;
 use App\Http\Controllers\Administracion\BloqueoAgendaController;
+use App\Http\Controllers\Administracion\CajaController;
 use App\Http\Controllers\Administracion\ConfiguracionCorreoController;
+use App\Http\Controllers\Administracion\CuentaCorrienteController;
 use App\Http\Controllers\Administracion\MarcaController;
+use App\Http\Controllers\Administracion\MetodoPagoController;
 use App\Http\Controllers\Administracion\ModeloController;
 use App\Http\Controllers\Administracion\PresupuestoController;
 use App\Http\Controllers\Administracion\PresupuestoPdfController;
@@ -60,6 +63,24 @@ Route::middleware(['auth', 'rol:administracion'])
         Route::get('/proveedores/{proveedor}/editar', [ProveedorController::class, 'edit'])->name('proveedores.edit');
         Route::post('/proveedores/{proveedor}', [ProveedorController::class, 'update'])->name('proveedores.update');
         Route::post('/proveedores/{proveedor}/toggle', [ProveedorController::class, 'toggle'])->name('proveedores.toggle');
+
+        // Caja: caja única del día distinguida por método de pago (catálogo
+        // administrable), con cierre diario y reporte de importes por método.
+        // Igual que con /proveedores/rubros, "/metodos" va antes de /cerrar
+        // porque son ambas rutas literales bajo el mismo prefijo.
+        Route::get('/caja', [CajaController::class, 'index'])->name('caja.index');
+        Route::post('/caja', [CajaController::class, 'store'])->name('caja.store');
+        Route::post('/caja/cerrar', [CajaController::class, 'cerrar'])->name('caja.cerrar');
+        Route::get('/caja/metodos', [MetodoPagoController::class, 'index'])->name('caja.metodos.index');
+        Route::post('/caja/metodos', [MetodoPagoController::class, 'store'])->name('caja.metodos.store');
+        Route::delete('/caja/metodos/{metodo}', [MetodoPagoController::class, 'destroy'])->name('caja.metodos.destroy');
+
+        // Cuentas corrientes: sin límite de crédito ni interés por ahora.
+        // Los movimientos se cargan a mano, un pago en Caja no genera
+        // crédito acá solo.
+        Route::get('/cuentas-corrientes', [CuentaCorrienteController::class, 'index'])->name('cuentas-corrientes.index');
+        Route::get('/cuentas-corrientes/{cliente}', [CuentaCorrienteController::class, 'show'])->name('cuentas-corrientes.show');
+        Route::post('/cuentas-corrientes/{cliente}', [CuentaCorrienteController::class, 'store'])->name('cuentas-corrientes.store');
 
         // Gestión de usuarios (Administración y Taller).
         Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');

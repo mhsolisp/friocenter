@@ -58,6 +58,16 @@
             <a href="{{ route('administracion.proveedores.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Administrar →</a>
         </div>
         <div class="card">
+            <h3>Caja</h3>
+            <p>Movimientos del día por método de pago y cierre diario.</p>
+            <a href="{{ route('administracion.caja.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Ver caja →</a>
+        </div>
+        <div class="card">
+            <h3>Cuentas corrientes</h3>
+            <p>Saldo y movimientos de cuenta corriente por cliente.</p>
+            <a href="{{ route('administracion.cuentas-corrientes.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Ver cuentas →</a>
+        </div>
+        <div class="card">
             <h3>Usuarios</h3>
             <p>Gestionar accesos y permisos del equipo de Taller.</p>
             <a href="{{ route('administracion.usuarios.index') }}" class="badge" style="background:#eaf6fa; color:var(--navy); text-decoration:none;">Administrar →</a>

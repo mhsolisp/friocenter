@@ -27,4 +27,9 @@ class Cliente extends Model
     {
         return $this->hasMany(Turno::class);
     }
+
+    public function movimientosCuentaCorriente(): HasMany
+    {
+        return $this->hasMany(MovimientoCuentaCorriente::class);
+    }
 }
