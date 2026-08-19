@@ -40,7 +40,22 @@
       "PowerShell(Start-Process -FilePath \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" -ArgumentList \"artisan\",\"serve\" -WorkingDirectory \"C:\\\\laragon\\\\www\\\\frio-center\" -WindowStyle Hidden)",
       "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" artisan tinker --execute 'App\\\\Models\\\\User::select\\(\"id\",\"name\",\"email\",\"rol\"\\)->get\\(\\)->each\\(fn\\($u\\) => print\\($u->id.\" | \".$u->name.\" | \".$u->email.\" | \".$u->rol.\"\\\\n\"\\)\\);')",
       "Bash(\"/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe\" artisan *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "PowerShell(Get-CimInstance *)",
+      "PowerShell(Stop-Process *)",
+      "Read(//tmp/**)",
+      "Bash(xargs grep -l \"frio-center\\\\|DocumentRoot.*www\")",
+      "WebSearch",
+      "Bash(composer --version)",
+      "Read(//c/laragon/bin/composer/**)",
+      "Bash(mkdir -p /c/Users/matias/AppData/Local/Temp/claude/C--laragon-www-frio-center/ec133877-3fab-45e0-b6d7-d456f36363ad/scratchpad/ferozo)",
+      "Read(//c/Users/matias/AppData/Local/Temp/claude/C--laragon-www-frio-center/ec133877-3fab-45e0-b6d7-d456f36363ad/scratchpad/**)",
+      "Bash(\"/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe\" \"/c/laragon/bin/composer/composer.phar\" install --no-dev --optimize-autoloader --no-interaction)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe *)",
+      "Bash(grep -n \"number_format\\\\|format\\('d/m\\\\|money\\\\|\\\\\\\\\\\\$\" resources/views/administracion/presupuestos/historial.blade.php)",
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" artisan route:list --name=caja)",
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php-8.3.30-Win32-vs16-x64\\\\php.exe\" artisan route:list --name=cuentas)",
+      "Bash(grep -oP '\\\\$[0-9.,]+')"
     ]
   },
   "enabledMcpjsonServers": [
